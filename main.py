@@ -1,7 +1,7 @@
 from API import get_prediction
 from flask import Flask, request, render_template, jsonify
 
-MODEL_PATH = "Malicious_URL_Prediction.h5"
+MODEL_PATH = "model.h5"
 
 app = Flask(__name__)
 
@@ -17,13 +17,7 @@ def checkurl():
     else:
         staus = "severe"
 
-    return jsonify(
-        {
-            "url":url,
-            "confidence":prediction,
-            "staus": staus
-        }
-    )
+    return prediction
 
 if __name__=="__main__":
     app.run()
