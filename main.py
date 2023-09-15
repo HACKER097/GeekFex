@@ -1,11 +1,29 @@
 from API import get_prediction
+from flask import Flask, request, render_template, jsonify
 
-# path to trained model
-model_path = "Malicious_URL_Prediction.h5"
+MODEL_PATH = "Malicious_URL_Prediction.h5"
 
-# input url
-url = "https://www.netflix.com/"
+app = Flask(__name__)
 
-# returns probability of url being malicious
-prediction = get_prediction(url,model_path)
-print(prediction)
+@app.route("/checkurl", methods=["GET"])
+def checkurl():
+    url = request.args.get("url") 
+    prediction = get_prediction(url,MODEL_PATH)
+
+    if prediction<=50:
+        staus = "safe"
+    if prediction>50 and prediction<75:
+        staus = "moderate"
+    else:
+        staus = "severe"
+
+    return jsonify(
+        {
+            "url":url,
+            "confidence":prediction,
+            "staus": staus
+        }
+    )
+
+if __name__=="__main__":
+    app.run()
